@@ -6,6 +6,7 @@ import Profile from "./pages/profile";
 import { useAppStore } from "./store";
 import { apiClient } from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
+import LoaderPage from "./components/Loader";
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
@@ -52,7 +53,7 @@ const App = () => {
   if (loading) {
     return (
       <div>
-        <Loader />
+        <LoaderPage />
       </div>
     );
   }
