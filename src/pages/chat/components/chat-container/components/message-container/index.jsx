@@ -12,6 +12,7 @@ import { IoMdArrowRoundDown } from "react-icons/io";
 import { IoCloseSharp } from "react-icons/io5";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getColor } from "@/lib/utils";
+import { LoaderChat } from "@/components/Loader";
 const MessageContainer = () => {
   const scrollRef = useRef();
   const {
@@ -19,17 +20,17 @@ const MessageContainer = () => {
     selectedChatData,
     selectedChatMessages,
     setSelectedChatMessages,
-    setIsDownloading,
-    setFileDownloadProgress,
     userInfo,
   } = useAppStore();
 
   const [showImage, setShowImage] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getMessages = async () => {
       try {
+        setIsLoading(true);
         const response = await apiClient.post(
           GET_ALL_MESSAGES_ROUTE,
           {
@@ -39,17 +40,21 @@ const MessageContainer = () => {
             withCredentials: true,
           }
         );
-        console.log(response);
+        // console.log(response);
         if (response.data) {
           setSelectedChatMessages(response.data);
+          setIsLoading(false);
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     const getChannelMessages = async () => {
       try {
+        setIsLoading(true);
         const response = await apiClient.get(
           `${GET_CHANNEL_MESSAGES_ROUTE}/${selectedChatData._id}`,
           {
@@ -59,9 +64,12 @@ const MessageContainer = () => {
         if (response.data.messages) {
           // console.log(response.data.messages);
           setSelectedChatMessages(response.data.messages);
+          setIsLoading(false);
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (selectedChatData._id) {
@@ -285,7 +293,7 @@ const MessageContainer = () => {
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-hidden p-4 px-8 md:w-[65vw] lg:w-[70vw] xl:w-[80vw] w-full">
-      {renderMessages()}
+      {isLoading ? <LoaderChat /> : renderMessages()}
       <div ref={scrollRef} />
       {showImage && (
         <div className="fixed z-[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg flex-col">

@@ -3,10 +3,11 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Auth from "./pages/auth";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile";
+import VideoCall from "./pages/call";
 import { useAppStore } from "./store";
 import { apiClient } from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
-import LoaderPage from "./components/Loader";
+import { LoaderPage } from "./components/Loader";
 
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore();
@@ -85,7 +86,14 @@ const App = () => {
             </PrivateRoute>
           }
         />
-
+        <Route
+          path="/videoCall"
+          element={
+            <PrivateRoute>
+              <VideoCall />
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/auth" />} />
       </Routes>
     </BrowserRouter>

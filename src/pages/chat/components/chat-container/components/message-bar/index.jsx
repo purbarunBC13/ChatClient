@@ -11,7 +11,7 @@ import { RiEmojiStickerLine } from "react-icons/ri";
 const MessageBar = () => {
   const emojiRef = useRef();
   const fileInputRef = useRef();
-  const socket = useSocket();
+  const { socket } = useSocket();
   const [message, setMessage] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const {

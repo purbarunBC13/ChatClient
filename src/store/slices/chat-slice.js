@@ -8,7 +8,9 @@ export const createChatSlice = (set, get) => ({
   fileUploadProgress: 0,
   fileDownloadProgress: 0,
   channels: [],
+  callRoom: undefined,
 
+  setCallRoom: (callRoom) => set({ callRoom }),
   setChannels: (channels) => set({ channels }),
   setIsUploading: (isUploading) => set({ isUploading }),
   setIsDownloading: (isDownloading) => set({ isDownloading }),
