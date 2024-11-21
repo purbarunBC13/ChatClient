@@ -21,7 +21,7 @@ const ContactList = ({ contacts, isChannel = false }) => {
       setSelectedChatMessages([]);
     }
   };
-  console.log("List", contacts);
+  // console.log("List", contacts);
 
   return (
     <div className="mt-5">
