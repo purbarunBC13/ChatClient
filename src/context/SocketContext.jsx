@@ -44,6 +44,25 @@ export const SocketProvider = ({ children }) => {
 
         setIncomingCall({ room, caller: userIdentity });
       });
+
+      // Listen for incoming channel call
+      socket.current.on(
+        "receiveChannelCallRequest",
+        ({ channelId, userIdentity }) => {
+          console.log(
+            `Incoming call from ${userIdentity} in channel ${channelId}`
+          );
+          if (audioRef.current) {
+            audioRef.current.loop = true;
+            audioRef.current.play().catch((err) => {
+              console.error("Error playing sound:", err);
+            });
+          }
+
+          setIncomingCall({ room: channelId, caller: userIdentity });
+        }
+      );
+
       // Handle call rejection
       socket.current.on("callRejected", ({ room }) => {
         console.log(`Call to room ${room} was rejected`);

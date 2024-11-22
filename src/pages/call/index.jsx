@@ -26,7 +26,7 @@ export default function App() {
   const [currentToken, setCurrentToken] = useState("");
   const [isReceivingCall, setIsReceivingCall] = useState(false); // Track if receiving a call
   const [callRoom, setCallRoom] = useState(null);
-  const { selectedChatData, userInfo } = useAppStore();
+  const { selectedChatData, userInfo, selectedChatType } = useAppStore();
   const navigate = useNavigate();
   const { socket } = useSocket();
 
@@ -39,8 +39,17 @@ export default function App() {
       setIdentity(userIdentity);
       handleJoin(room, userIdentity);
 
-      // Notify the recipient about the call
-      socket.emit("sendCallRequest", { room, userIdentity });
+      if (selectedChatType === "contact") {
+        // Notify the recipient about the call
+        socket.emit("sendCallRequest", { room, userIdentity });
+      } else if (selectedChatType === "channel") {
+        // Notify the channel members about the call
+        socket.emit("sendChannelCallRequest", {
+          channelId: room,
+          userId: userInfo.id,
+          userIdentity,
+        });
+      }
     }
   }, [selectedChatData]);
 
