@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css"; // or another theme
+import { ClipboardCopy, ClipboardCheck } from "lucide-react";
 const EmptyChatContainer = () => {
   return (
     <div className="flex-1 md:bg-[#1c1d25] md:flex flex-col justify-center items-center hidden transition-all duration-100">
@@ -72,11 +73,50 @@ const AIChat = () => {
       ) : null}
       {response !== "" && (
         <div className="border w-full rounded-md p-4 whitespace-pre-wrap prose prose-invert max-w-none">
-          <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
+          <ReactMarkdown
+            rehypePlugins={[rehypeHighlight]}
+            // components={{
+            //   code: CodeBlockWithCopy,
+            // }}
+          >
             {response}
           </ReactMarkdown>
         </div>
       )}
+    </div>
+  );
+};
+
+const CodeBlockWithCopy = ({ inline, className, children, ...props }) => {
+  const [copied, setCopied] = useState(false);
+  const lang = className?.replace("language-", "") || "";
+
+  if (inline) {
+    return (
+      <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{code}</ReactMarkdown>
+    );
+  }
+
+  const code = String(children).trim();
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative group">
+      <button
+        onClick={handleCopy}
+        className="absolute top-2 right-2 p-1 bg-gray-800 text-white rounded opacity-0 group-hover:opacity-100 transition"
+        title="Copy code"
+      >
+        {copied ? <ClipboardCheck size={16} /> : <ClipboardCopy size={16} />}
+      </button>
+      <pre className={`overflow-x-auto rounded-md bg-gray-900 text-white p-4`}>
+        <ReactMarkdown rehypePlugins={[rehypeHighlight]}>{code}</ReactMarkdown>
+      </pre>
     </div>
   );
 };

@@ -35,7 +35,7 @@ export const streamAIResponse = async (messages, onDataChunk) => {
       try {
         const parsed = JSON.parse(json);
         const delta = parsed?.choices?.[0]?.delta?.content;
-        if (delta) {
+        if (typeof delta === "string") {
           fullText += delta;
           onDataChunk(fullText);
         }
