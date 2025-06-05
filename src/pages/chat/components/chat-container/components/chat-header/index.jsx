@@ -1,4 +1,5 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useSocket } from "@/context/SocketContext";
 import { getColor } from "@/lib/utils";
 import { useAppStore } from "@/store";
 import { Video } from "lucide-react";
@@ -6,8 +7,17 @@ import React from "react";
 import { RiCloseFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
-const ChatHeader = () => {
+const ChatHeader = ({ setMessage }) => {
   const { closeChat, selectedChatData, selectedChatType } = useAppStore();
+  const { typingRoomId, isTyping } = useSocket();
+
+  console.log(
+    typingRoomId,
+    " ",
+    selectedChatData._id,
+    "isTyping in chat header"
+  );
+
   const navigate = useNavigate();
   return (
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex items-center justify-between px-20">
@@ -45,6 +55,13 @@ const ChatHeader = () => {
             {selectedChatType === "contact" && selectedChatData.firstName
               ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
               : selectedChatData.email}
+            {isTyping && (
+              <div className="text-xs text-gray-400">
+                {typingRoomId.senderId === selectedChatData._id
+                  ? `${selectedChatData.firstName} is typing...`
+                  : null}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center justify-center gap-5 cursor-pointer">

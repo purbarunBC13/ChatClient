@@ -8,11 +8,11 @@ import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
 
-const MessageBar = () => {
+const MessageBar = ({ message, setMessage }) => {
   const emojiRef = useRef();
   const fileInputRef = useRef();
   const { socket } = useSocket();
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const {
     selectedChatType,
@@ -113,7 +113,20 @@ const MessageBar = () => {
           className="flex-1 p-5 bg-transparent rounded-md focus:outline-none"
           placeholder="Type a message"
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            if (e.target.value.trim() !== "") {
+              socket.emit("typing", {
+                recipientId: selectedChatData._id,
+                senderId: userInfo.id,
+              });
+            } else {
+              socket.emit("stop typing", {
+                recipientId: selectedChatData._id,
+                senderId: userInfo.id,
+              });
+            }
+          }}
         />
         <button
           className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all"

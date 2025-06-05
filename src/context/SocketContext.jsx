@@ -17,6 +17,11 @@ export const SocketProvider = ({ children }) => {
   const socket = useRef();
   const { userInfo, setCallRoom } = useAppStore();
   const [incomingCall, setIncomingCall] = useState(null); // State for incoming call
+  const [typingRoomId, setTypingRoomId] = useState({
+    recipientId: null,
+    senderId: null,
+  });
+  const [isTyping, setIsTyping] = useState(false); // State to track if the user is typing
   const audioRef = useRef(new Audio(notificationSound));
 
   useEffect(() => {
@@ -142,6 +147,24 @@ export const SocketProvider = ({ children }) => {
           }
       };
 
+      socket.current.on("typing", ({ recipientId, senderId }) => {
+        console.log(`User is typing in room: ${recipientId}`);
+        setTypingRoomId({
+          recipientId,
+          senderId,
+        });
+        setIsTyping(true);
+      });
+
+      socket.current.on("stop typing", ({ recipientId, senderId }) => {
+        console.log(`User stopped typing in room: ${recipientId}`);
+        setTypingRoomId({
+          recipientId: null,
+          senderId: null,
+        });
+        setIsTyping(false);
+      });
+
       socket.current.on("receiveMessage", handleReceiveMessage);
       socket.current.on("recieve-channel-message", handleReceiveChannelMessage);
 
@@ -191,6 +214,8 @@ export const SocketProvider = ({ children }) => {
         socket: socket.current,
         rejectCall,
         acceptCall,
+        typingRoomId,
+        isTyping,
       }}
     >
       {children}
