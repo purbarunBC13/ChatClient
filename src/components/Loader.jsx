@@ -5,7 +5,9 @@ import ChatLoader from "../assets/ChatLoader.json";
 import EmptyChat from "../assets/EmptyChat.json";
 const LoaderPage = () => {
   return (
-    <Lottie options={{ animationData: Loader, loop: true, autoplay: true }} />
+    <div className="flex items-center justify-center h-screen">
+      <Lottie options={{ animationData: Loader, loop: true, autoplay: true }} />
+    </div>
   );
 };
 
