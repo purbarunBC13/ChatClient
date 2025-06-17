@@ -9,6 +9,7 @@ import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
+import { Eye, EyeOff } from "lucide-react";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isView, setIsView] = useState(false);
 
   const validateSignup = () => {
     if (!email || !password || !confirmPassword) {
@@ -116,13 +118,28 @@ const Auth = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    placeholder="Password"
+                    type={isView ? "text" : "password"}
+                    className="rounded-full p-6"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  {isView ? (
+                    <Eye
+                      className="absolute right-4 top-4 z-10 cursor-pointer text-gray-500"
+                      onClick={() => {
+                        setIsView(!isView), console.log(isView);
+                      }}
+                    />
+                  ) : (
+                    <EyeOff
+                      className="absolute right-4 top-4 z-10 cursor-pointer text-gray-500"
+                      onClick={() => setIsView(!isView)}
+                    />
+                  )}
+                </div>
                 <Button className="rounded-full p-6" onClick={handleLogin}>
                   Login
                 </Button>
