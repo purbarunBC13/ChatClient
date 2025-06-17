@@ -18,6 +18,7 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isView, setIsView] = useState(false);
+  const [isConfirmView, setIsConfirmView] = useState(false);
 
   const validateSignup = () => {
     if (!email || !password || !confirmPassword) {
@@ -26,6 +27,15 @@ const Auth = () => {
     }
     if (password !== confirmPassword) {
       toast.error("Password and confirm password do not match");
+      return false;
+    }
+    // Password validation: min 8 chars, uppercase, lowercase, number, special char
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
+      );
       return false;
     }
     return true;
@@ -152,20 +162,50 @@ const Auth = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <Input
-                  placeholder="Confirm Password"
-                  type="password"
-                  className="rounded-full p-6"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    placeholder="Password"
+                    type={isView ? "text" : "password"}
+                    className="rounded-full p-6"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  {isView ? (
+                    <Eye
+                      className="absolute right-4 top-4 z-10 cursor-pointer text-gray-500"
+                      onClick={() => {
+                        setIsView(!isView);
+                      }}
+                    />
+                  ) : (
+                    <EyeOff
+                      className="absolute right-4 top-4 z-10 cursor-pointer text-gray-500"
+                      onClick={() => setIsView(!isView)}
+                    />
+                  )}
+                </div>
+                <div className="relative">
+                  <Input
+                    placeholder="Confirm Password"
+                    type={isConfirmView ? "text" : "password"}
+                    className="rounded-full p-6"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                  {isConfirmView ? (
+                    <Eye
+                      className="absolute right-4 top-4 z-10 cursor-pointer text-gray-500"
+                      onClick={() => {
+                        setIsConfirmView(!isConfirmView);
+                      }}
+                    />
+                  ) : (
+                    <EyeOff
+                      className="absolute right-4 top-4 z-10 cursor-pointer text-gray-500"
+                      onClick={() => setIsConfirmView(!isConfirmView)}
+                    />
+                  )}
+                </div>
                 <Button className="rounded-full p-6" onClick={handleSignup}>
                   Signup
                 </Button>
