@@ -54,6 +54,10 @@ const MessageBar = ({ message, setMessage }) => {
         channelId: selectedChatData._id,
       });
     }
+    socket.emit("stop typing", {
+      recipientId: selectedChatData._id,
+      senderId: userInfo.id,
+    });
     setMessage("");
   };
 

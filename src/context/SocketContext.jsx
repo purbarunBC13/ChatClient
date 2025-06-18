@@ -167,6 +167,24 @@ export const SocketProvider = ({ children }) => {
 
       socket.current.on("receiveMessage", handleReceiveMessage);
       socket.current.on("recieve-channel-message", handleReceiveChannelMessage);
+      socket.current.on("eventScheduled", ({ message, dateTime }) => {
+        toast({
+          title: "Event Scheduled",
+          description: `📅 ${message} at ${new Date(
+            dateTime
+          ).toLocaleString()}`,
+          duration: 5000,
+        });
+      });
+
+      // Listen to future reminders
+      socket.current.on("reminder", ({ message, time }) => {
+        toast({
+          title: "Reminder",
+          description: `⏰ ${message} at ${new Date(time).toLocaleString()}`,
+          duration: 5000,
+        });
+      });
 
       return () => {
         socket.current.disconnect();
